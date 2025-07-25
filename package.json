@@ -1,0 +1,23 @@
+{
+  "name": "pdf-impressor",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.seunome.pdfimpressor",
+    "productName": "PDF Impressor",
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "dependencies": {
+    "pdf-to-printer": "^5.0.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
