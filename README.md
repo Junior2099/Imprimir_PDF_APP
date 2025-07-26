@@ -31,5 +31,5 @@ cd pdf-impressor
 
 3. npm start
 
-
+4. Use o configurar impressora .sh para deixar o programa no menu de contexto ao clicar botão direito do mouse
 
