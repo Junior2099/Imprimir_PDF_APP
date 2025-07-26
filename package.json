@@ -1,0 +1,28 @@
+{
+  "name": "image-pdf-printer",
+  "version": "1.0.0",
+  "description": "Um aplicativo Electron para visualizar e imprimir imagens e PDFs com opções avançadas.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Electron",
+    "Imagem",
+    "PDF",
+    "Imprimir",
+    "CUPS"
+  ],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^29.1.0"
+  },
+  "dependencies": {
+    "node-printer": "^1.0.4",      
+    "fs-extra": "^11.2.0",        
+    "path": "^0.12.7"             
+
+  }
+}

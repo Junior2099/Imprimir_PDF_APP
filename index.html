@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizador e Impressor Inteligente</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+     body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f7fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 2.5em; 
+            font-weight: 600;
+            display: flex;
+            align-items: center; 
+        }
+        h1 i {
+            margin-right: 15px; 
+            color: #007bff;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .left-panel, .right-panel {
+            padding: 20px;
+            box-sizing: border-box;
+            height: calc(100vh - 80px); 
+            overflow-y: auto;
+        }
+        .left-panel {
+            flex: 1; 
+            border-right: 1px solid #eee;
+        }
+        .right-panel {
+            flex: 2; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; 
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #folder-path {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+            word-wrap: break-word; 
+        }
+        #file-list {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+        #file-list li {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #file-list li:hover {
+            background-color: #f5f5f5;
+        }
+        #file-list li.selected {
+            background-color: #e0f2f7;
+            font-weight: bold;
+        }
+        #preview-area {
+            width: 90%;
+            height: 400px; 
+            margin-top: 20px;
+            background-color: #e9e9e9;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative; 
+        }
+        #preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: none; 
+            object-fit: contain;
+        }
+        #file-info {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+            display: none;
+            position: absolute; 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .print-options {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .print-options label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .print-options input[type="text"], .print-options select {
+            width: calc(100% - 22px); 
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .print-options input[type="radio"] {
+            margin-right: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        #print-status {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .status-success {
+            color: green;
+        }
+        .status-error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1><i class="fas fa-print"></i> Sua Central de Impressão</h1> 
+
+    <div class="container">
+        <div class="left-panel">
+            <button id="select-folder">Escolher Pasta</button>
+            <p id="folder-path">Nenhuma pasta selecionada.</p>
+            <h3>Arquivos na Pasta:</h3>
+            <ul id="file-list">
+                </ul>
+        </div>
+
+        <div class="right-panel">
+            <h2>Pré-visualização e Opções de Impressão</h2>
+            <div id="preview-area">
+                <img id="preview-image" src="" alt="Pré-visualização da Imagem">
+                <p id="file-info">Selecione um arquivo para pré-visualizar ou ver informações.</p>
+            </div>
+
+            <div class="print-options">
+                <label for="printer-select">Impressora:</label>
+                <select id="printer-select">
+                    </select>
+
+                <div id="pdf-options" class="hidden">
+                    <label for="page-range">Páginas (ex: 1-5, 3, 2,4,6):</label>
+                    <input type="text" id="page-range" placeholder="Todas ou 1-5, 3, etc.">
+                </div>
+
+                <div id="image-options" class="hidden">
+                    <label>Tamanho da Imagem no A4:</label>
+                    <div>
+                        <input type="radio" id="image-full" name="image-size" value="full" checked>
+                        <label for="image-full">Folha Toda</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="image-half" name="image-size" value="half">
+                        <label for="image-half">Metade da Folha</label>
+                    </div>
+                </div>
+
+                <button id="print-button" disabled>Imprimir</button>
+                <p id="print-status"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+</body>
+</html>
